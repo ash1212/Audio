@@ -6,10 +6,6 @@ import speech_recognition as sr
 
 from threading import Thread
 
-"""
-USE TERMINAL NOT PYCHARM TERMINAL!!!!!!
-"""
-
 
 class Record:
     def recording(self):
