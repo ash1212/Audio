@@ -2,9 +2,6 @@ import pyaudio
 import wave
 import time
 
-"""
-USE TERMINAL NOT PYCHARM TERMINAL!!!!!!
-"""
 
 file_name = input("Enter the file name: ")
 
@@ -37,5 +34,4 @@ wf.close()
 
 print("Finished")
 
-# close PyAudio (7)
 pa.terminate()
