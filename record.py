@@ -61,7 +61,7 @@ class Record:
             t -= 1
 
     def speech_to_text(self):
-        question = input(str("Do you want convert this to text? y/ N: "))
+        question = input("Do you want convert this to text? y/ N: ")
 
         if question == "y":
             r = sr.Recognizer()
@@ -72,7 +72,7 @@ class Record:
             file_num = 0
             while os.path.exists("text-%s.txt" % file_num):
                 file_num += 1
-            speech_to_text_filename = ("audio-%s.txt" % file_num)
+            speech_to_text_filename = ("text-%s.txt" % file_num)
 
             try:
                 f = open(speech_to_text_filename, "w+")
