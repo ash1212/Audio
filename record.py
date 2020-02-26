@@ -1,7 +1,7 @@
 import os
 import pyaudio
 import time
-import wave  # audio file format - .wav file
+import wave
 import speech_recognition as sr
 
 from threading import Thread
@@ -9,18 +9,20 @@ from threading import Thread
 
 class Record:
     def recording(self):
-        chunk = 1024  # How many bytes
-        format = pyaudio.paInt16  # 16 bit
+        chunk = 1024
+        format = pyaudio.paInt16
         channels = 2
-        rate = 40000  # Hz - the amount of samples per second
+        rate = 40000
         record_seconds = 5
 
         file_num = 0
-        while os.path.exists("audio-%s.wav" % file_num):
+        while os.path.exists(f"audio-{file_num}"):
             file_num += 1
-        self.wave_output_filename = ("audio-%s.wav" % file_num)
+        self.wave_output_filename = f"audio-{file_num}"
 
         pa = pyaudio.PyAudio()
+
+        print("* RECORDING")
 
         stream = pa.open(
             format=format,
@@ -30,20 +32,18 @@ class Record:
             frames_per_buffer=chunk
         )
 
-        print("* RECORDING")
-
         frames = []
 
         for i in range(0, int(rate / chunk * record_seconds)):
             data = stream.read(chunk)
             frames.append(data)
 
-        print("* FINISHED")
-        print("Saved to: ", self.wave_output_filename)
-
         stream.stop_stream()
         stream.close()
         pa.terminate()
+
+        print("* FINISHED")
+        print("Saved to: ", self.wave_output_filename)
 
         wf = wave.open(self.wave_output_filename, 'wb')
         wf.setnchannels(channels)
@@ -55,7 +55,7 @@ class Record:
     def countdowwn(self, t):
         while t:
             mins, secs = divmod(t, 5)
-            timeformat = '{:02d}:{:02d}'.format(mins, secs)
+            timeformat = "{:02d}:{:02d}".format(mins, secs)
             print(timeformat, end='\r')
             time.sleep(1)
             t -= 1
@@ -65,7 +65,7 @@ class Record:
 
         if question == "y":
             r = sr.Recognizer()
-            speech_to_text_filename = sr.AudioFile(self.wave_output_filename)
+            speech_to_text_filename = sr.AudioFile("audio-0.wav")
             with speech_to_text_filename as source:
                 audio = r.record(source)
 
@@ -75,8 +75,9 @@ class Record:
             speech_to_text_filename = ("text-%s.txt" % file_num)
 
             try:
-                f = open(speech_to_text_filename, "w+")
-                f.write(r.recognize_google(audio))
+                with open(speech_to_text_filename, "w") as f:
+                    f.write(r.recognize_google(audio))
+
                 print("Text save to: ", speech_to_text_filename)
             except:
                 print("No input recognised")
